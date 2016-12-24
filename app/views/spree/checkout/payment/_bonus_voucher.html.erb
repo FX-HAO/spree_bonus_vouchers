@@ -1,0 +1,18 @@
+<% param_prefix = "payment_source[#{payment_method.id}]" %>
+<% @order.user.spree_bonus_vouchers.each do |bonus_voucher| %>
+  <%= check_box_tag "#{param_prefix}[bonus_voucher_ids][]", bonus_voucher.id, false, amount: bonus_voucher.amount.to_i, :class => "spree_bonus_vouchers" %>
+  <%= label_tag("#{param_prefix}[bonus_voucher_ids][]", "#{bonus_voucher.amount.to_i} points") %><br/>
+<% end %>
+
+<script>
+  ($('form.edit_order')).on('submit', function(e) {
+    var vouchers_amount = 0;
+    $('.spree_bonus_vouchers:checked').each(function() {
+      vouchers_amount += parseInt($(this).attr('amount'));
+    });
+    if(vouchers_amount < parseFloat($("#summary-order-total").html().slice(1)) * 100) {
+      alert("failure");
+      e.preventDefault();
+    }
+  });
+</script>
